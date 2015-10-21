@@ -1,0 +1,317 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <style>
+            body {
+                font-family: arial,sans-serif;
+            }
+        #debugDiv {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: none;
+        }
+        </style>
+        <h1>Tank 1 Control</h1>
+        <div id="messageDiv"><BR></div><div id="commandDiv"><BR></div>
+        <div><button style="height:50px;width:100px"  onclick="javascript:countdownToCalibrate();">calibrate</button><BR>
+            <input type=checkbox onclick="javascript:toggle_visibility('debugDiv');">Show debug info</input></div>
+        <div id="debugDiv"></div>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="https://js.leapmotion.com/leap-0.6.4.js"></script>
+        <script type="text/javascript">
+            var calibratedLeft=null;
+            var calibratedRight=null;
+            var counter;
+            var calibrating = false;
+            var lastAction = 0;
+            var threashold = 20;
+            var calibrated = false;
+            
+            function countdownToCalibrate() {
+                counter=5;
+                countdown();
+            }
+        
+        function countdown() {
+            if(counter==0)
+            {
+                document.getElementById('messageDiv').innerHTML = "Calibrating.";
+                calibrating = true;
+            }
+            else {
+                document.getElementById('messageDiv').innerHTML = "Hold hands over leap motion in: " + counter;
+                counter--;
+                debugWindow.innerHTML = frameString;
+                setTimeout(countdown, 1000);
+            }
+        }
+        
+        function toggle_visibility(id) {
+            var e = document.getElementById(id);
+            if(e.style.display == 'block')
+            e.style.display = 'none';
+            else
+            e.style.display = 'block';
+        }
+        
+        function forward() {
+            $.get("/tank/1/forward",
+                  function(data){
+                  });
+        }
+        function backward() {
+            $.get("/tank/1/backward",
+                  function(data){
+                  });
+        }
+        
+        function left() {
+            $.get("/tank/1/left",
+                  function(data){
+                  });
+        }
+        function right() {
+            $.get("/tank/1/right",
+                  function(data){
+                  });
+        }
+        function allstop() {
+            $.get("/tank/1/stop",
+                  function(data){
+                  });
+        }
+        function fire() {
+            $.get("/tank/1/fire",
+                  function(data){
+                  });
+        }
+        
+        function concatData(id, data) {
+            return id + ": " + data + "<br>";
+        }
+        
+        function concatJointPosition(id, position) {
+            return id + ": " + position[0] + ", " + position[1] + ", " + position[2] + "<br>";
+        }
+        
+        function takeAction(actionNum) {
+            if(actionNum!=lastAction) {
+                switch (actionNum) {
+                    case 1:
+                    document.getElementById('commandDiv').innerHTML = "Forward.";
+                    forward();
+                    break;
+                    case 2:
+                    document.getElementById('commandDiv').innerHTML = "Backward.";
+                    backward();
+                    break;
+                    case 3:
+                    document.getElementById('commandDiv').innerHTML = "Left.";
+                    left();
+                    break;
+                    case 4:
+                    document.getElementById('commandDiv').innerHTML = "Right.";
+                    right();
+                    break;
+                    case 5:
+                    document.getElementById('commandDiv').innerHTML = "Stop.";
+                    allstop();
+                    break;
+                    case 6:
+                    document.getElementById('commandDiv').innerHTML = "Fire.";
+                    fire();
+                    break;
+                }
+                lastAction = actionNum;
+            }
+        }
+        
+        function checkHandPosition(currentLeft, currentRight) {
+            var left = 0;
+            var right = 0;
+            var calcDist=0;
+            var currentAction=0;
+            
+            if(currentLeft==null && currentRight==null)
+            {
+                //no hands...stop;
+                currentAction=5;
+                
+            }
+            else {
+                if(currentLeft != null) {
+                    if (currentLeft < calibratedLeft) {
+                        //leftHandForward
+                        calcDist = calibratedLeft - currentLeft;
+                        if (calcDist > threashold) {
+                            left = 1;
+                        }
+                    }
+                    if (currentLeft > calibratedLeft) {
+                        //leftHandbackward
+                        calcDist = currentLeft - calibratedLeft;
+                        if (calcDist > threashold) {
+                            left = -1;
+                        }
+                    }
+                }
+                else
+                {
+                    left = null;
+                }
+                if(currentRight!=null) {
+                    if (currentRight < calibratedRight) {
+                        //rightHandForward
+                        calcDist = calibratedRight - currentRight;
+                        if (calcDist > threashold) {
+                            right = 1;
+                        }
+                    }
+                    if (currentRight > calibratedRight) {
+                        //rightHandbackward
+                        calcDist = currentRight - calibratedRight;
+                        if (calcDist > threashold) {
+                            right = -1;
+                        }
+                    }
+                }
+                else
+                {
+                    right = null;
+                }
+                if(left==0 && right==0)
+                {
+                    //stop
+                    currentAction=5;
+                }
+                if(left==1 && right==0)
+                {
+                    //stop
+                    currentAction=5;
+                }
+                if(left==0 && right==1)
+                {
+                    //stop
+                    currentAction=5;
+                }
+                if(left==1 && right==1)
+                {
+                    //forward
+                    currentAction=1;
+                }
+                if(left==-1 && right==-1)
+                {
+                    //backward
+                    currentAction=2;
+                }
+                if(left==-1 && right==1)
+                {
+                    //left
+                    currentAction=3;
+                }
+                if(left==1 && right==-1)
+                {
+                    //right
+                    currentAction=4;
+                }
+                if(left==null && right ==1)
+                {
+                    //fire
+                    currentAction=6;
+                }
+                if(left==1 && right==null)
+                {
+                    //fire
+                    currentAction=6;
+                }
+            }
+            takeAction(currentAction);
+        }
+        
+        var debugWindow = document.getElementById('debugDiv');
+        var frameString = "", handString = "";
+        var hand;
+        
+        // Leap.loop uses browser's requestAnimationFrame
+        var options = { enableGestures: true };
+        
+        var updateCount = 0;
+        
+        // Main Leap Loop
+        Leap.loop(options, function(frame) {
+                  //run the hand position check every second
+                  var currentLeft = null;
+                  var currentRight = null;
+                  if(calibrated==true) {
+                  if (updateCount > 50) {
+                  updateCount = 0;
+                  for (var i = 0; i < frame.hands.length; i++) {
+                  hand = frame.hands[i];
+                  if (hand.type == "left") {
+                  currentLeft = hand.palmPosition[2];
+                  }
+                  if (hand.type == "right") {
+                  currentRight = hand.palmPosition[2];
+                  }
+                  }
+                  checkHandPosition(currentLeft, currentRight);
+                  }
+                  else {
+                  updateCount++;
+                  }
+                  }
+                  
+                  if (calibrating==true)
+                  {
+                  if(frame.hands.length==2) {
+                  for (var i = 0; i < frame.hands.length; i++) {
+                  hand = frame.hands[i];
+                  if (hand.type == "left") {
+                  calibratedLeft = hand.palmPosition[2];
+                  }
+                  if (hand.type == "right") {
+                  calibratedRight = hand.palmPosition[2];
+                  }
+                  }
+                  document.getElementById('messageDiv').innerHTML = "Success.  Ready to control tank.";
+                  calibrated=true;
+                  }
+                  else
+                  {
+                  document.getElementById('messageDiv').innerHTML = "Error...try calibrating again.";
+                  calibrated=false;
+                  
+                  }
+                  calibrating=false;
+                  }
+                  
+                  
+                  //get debug info and calibrate if needed
+                  frameString = concatData("frame_id", frame.id);
+                  frameString += concatData("num_hands", frame.hands.length);
+                  frameString += concatData("num_fingers", frame.fingers.length);
+                  frameString += concatData("calibrated", calibrated);
+                  frameString += concatData("calibrated right", calibratedRight);
+                  frameString += concatData("calibrated right", calibratedRight);
+                  frameString += "<br>";
+                  
+                  // Showcase some new V2 features
+                  for (var i = 0; i < frame.hands.length; i++) {
+                  hand = frame.hands[i];
+                  
+                  handString = concatData("hand_type", hand.type);
+                  handString += concatData("confidence", hand.confidence);
+                  handString += concatData("pinch_strength", hand.pinchStrength);
+                  handString += concatData("grab_strength", hand.grabStrength);
+                  handString += concatData("palmPosition", hand.palmPosition[2]);
+                  handString += '<br>';
+                  frameString += handString;
+                  }
+                  debugWindow.innerHTML = frameString;
+                  });
+                  
+            </script>
+    </body>
+</html>

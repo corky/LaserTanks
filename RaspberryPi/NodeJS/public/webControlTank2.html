@@ -1,0 +1,67 @@
+<html>
+    <head>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+        
+        <script>
+            function forward() {
+                $.get("/tank/2/forward",
+                      function(data){
+                      });
+            }
+        function backward() {
+            $.get("/tank/2/backward",
+                  function(data){
+                  });
+        }
+        
+        function left() {
+            $.get("/tank/2/left",
+                  function(data){
+                  });
+        }
+        function right() {
+            $.get("/tank/2/right",
+                  function(data){
+                  });
+        }
+        function allstop() {
+            $.get("/tank/2/stop",
+                  function(data){
+                  });
+        }
+        function fire() {
+            $.get("/tank/2/fire",
+                  function(data){
+                  });
+        }
+        </script>
+    </head>
+    <body>
+        <H1>Tank 2 Control</H1>
+
+        <TABLE>
+            <TR><TD ALIGN=LEFT>
+                <button style="height:50px;width:50px" onclick="javascript:fire();">fire</button>
+            </TD><TD>
+            </TD><TD ALIGN=RIGHT>
+                <button style="height:50px;width:50px" onclick="javascript:fire();">fire</button>
+            </TD></TR>
+            <TR></TR>
+            <TR><TD></TD><TD>
+                <button style="height:50px;width:100px" onclick="javascript:forward();">forward</button>
+            </TD><TD></TD></TR>
+            <TR></TR>
+            <TR><TD>
+                <button style="height:50px;width:100px"  onclick="javascript:left();">left</button>
+            </TD><TD>
+                <button style="height:50px;width:100px"  onclick="javascript:allstop();">stop</button>
+            </TD><TD>
+                <button style="height:50px;width:100px"  onclick="javascript:right();">right</button>
+            </TD></TR>
+            <TR></TR>
+            <TR><TD></TD><TD>
+                <button style="height:50px;width:100px"  onclick="javascript:backward();">backward</button>
+            </TD><TD></TD></TR>
+        </TABLE>
+    </body>
+</html>
