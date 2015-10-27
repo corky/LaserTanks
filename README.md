@@ -4,10 +4,18 @@ The Arduino directory contains the code to be built and deployed to the arduino 
 
 The Raspberry Pi directory contains the code to be built and deployed to the raspberry Pi.
 
-The RF24 Library used for both the Arduino sketches and the Raspberry Pi Node JS server is located here:  https://github.com/TMRh20/RF24
-
 ###Arduino setup
-Download the RF24 repository zip file from this location and include it as a library for your Arduino IDE.  The tank1 and tank2 sketches should now compile and be able to be deployed to the tanks.
+1) Download the RF24 repository zip file from this location https://github.com/TMRh20/RF24 and include it as a library for your Arduino IDE.  
+
+2) Remove the Robot IR Remote library that comes with the Arduino IDE.  It conflicts with the library we want to use.<BR>
+<B>Mac</B>: Applications/Arduino (right mouse click -->show package contents) /Contents/Java/libraries/RobotIRremote
+<B>Windows</B>: C:\Program Files (x86)\Arduino\libraries\RobotIRremote
+<BR>
+Once you have located the folder RobotIRremote, delete it. Restart the Arduino IDE and your RobotIRremote library should be gone. 
+
+3) Download the IRRemote library from here: https://github.com/z3t0/Arduino-IRremote and include the ZIP as a library for your Arduino IDE.
+
+4) The tank1 and tank2 sketches should now compile and be able to be deployed to the tanks.
 
 ###Raspberry Pi setup
 1) Download the RF24 github repository as a zip file from this location to your Raspberry pi, uncompress it to your Rpi.
