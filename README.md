@@ -7,9 +7,11 @@ The Raspberry Pi directory contains the code to be built and deployed to the ras
 The RF24 Library used for both the Arduino sketches and the Raspberry Pi Node JS server is located here:  https://github.com/TMRh20/RF24
 
 Arduino setup
+
 Download the zip file from this location and include it as a library for your Arduino IDE.
 
 Raspberry Pi setup
+
 1) Download the RF24 github repository as a zip file from this location to your Raspberry pi, uncompress it to your Rpi.
 
 2) Download the Laser Tanks Repository to your raspberry Pi.
