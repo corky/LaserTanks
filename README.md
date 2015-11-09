@@ -43,5 +43,9 @@ command# can be 1,2,3,4,5,6 (forward, backward, left, right, stop, fire)
 
 6) Startup the nodeJS app Server by typing "sudo nodejs AppServer.js"   You can test that the appserver is running but loading a browser window and hitting http://[IP Address of RPi]:8082/webControlTank1.html and you can click the different buttons and it should run "senddata 1 [command#]" on the command line.
 
-7) Now go to your computer with the leap motion installed and configured, load up a browser, and hit http://[IP Address of RPi]:8082/lpControlTank1.html    Click the calibrate button, and identify to the leap motion where "neutral" position for your hands are.  Once done, both hands forward will identify forward, both back will identify backward, left forward right back will turn right, left back right forward will turn left, neutral will stop and one hand forward and dropping your other hand out of site will fire the cannon.
+7) Now go to your computer with the leap motion installed and configured, load up a browser, and hit http://[IP Address of RPi]:8082/lpControlTank1.html    Click the calibrate button, and identify to the leap motion where "neutral" position for your hands are.  Once done, both hands forward will identify forward, both back will identify backward, left forward right back will turn right, left back right forward will turn left, neutral will stop and one hand forward and dropping your other hand out of site will fire the cannon.<BR>
+<BR>
+Loading http://[IP Address of RPi]:8082/lpControlTank1.html will allow the leap controller to control tank 1.<BR>
+Loading http://[IP Address of RPi]:8082/lpControlTank2.html will allow the leap controller to control tank 2.<BR>
+
 
